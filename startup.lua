@@ -5,6 +5,10 @@ print("   DIGITAL SCADA FOR MEKANISM")
 print("   Initializing... Please stand by")
 print("====================================")
 
+-- BIẾN TOÀN CỤC
+config = nil
+reactor_monitor = nil
+
 -- TẢI CONFIG_LOADER ĐẦU TIÊN
 print("Downloading config_loader.lua")
 local configSuccess = shell.run("wget", "https://raw.githubusercontent.com/JHoang-minecraft/digital-scada/refs/heads/main/scada/config_loader.lua", "config_loader.lua")
@@ -27,20 +31,25 @@ else
     print("ERROR: Failed to download reactor_monitor.lua")
 end
 
--- KIỂM TRA KẾT QUẢ
+-- KIỂM TRA BIẾN TOÀN CỤC THẬT SỰ
 print("====================================")
-if config and reactor_monitor then
+local hasConfig = (config ~= nil)
+local hasReactorMonitor = (reactor_monitor ~= nil)
+
+if hasConfig and hasReactorMonitor then
     print("SCADA SYSTEM: FULLY OPERATIONAL")
     print("Ready for reactor control!")
     
-    -- TỰ ĐỘNG KHỞI ĐỘNG GIÁM SÁT NẾU CẢ HAI ĐỀU LOAD THÀNH CÔNG
+    -- TỰ ĐỘNG KHỞI ĐỘNG GIÁM SÁT
     if reactor_monitor.init then
-        reactor_monitor.init("right") -- Hoặc side tùy chỉnh
+        reactor_monitor.init("right")
         print("Reactor monitor initialized!")
     end
 else
     print("SCADA SYSTEM: PARTIALLY LOADED")
-    if not config then print(" - Config: MISSING") end
-    if not reactor_monitor then print(" - Reactor Monitor: MISSING") end
+    if not hasConfig then print(" - Config: MISSING") end
+    if not hasReactorMonitor then print(" - Reactor Monitor: MISSING") end
+    print("DEBUG: config = " .. tostring(config))
+    print("DEBUG: reactor_monitor = " .. tostring(reactor_monitor))
 end
 print("====================================")
