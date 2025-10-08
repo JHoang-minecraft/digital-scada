@@ -1,45 +1,45 @@
--- Digital SCADA for Mekanism - Startup File  
-
+-- Digital SCADA for Mekanism - Startup File
+-- VERSION FINAL - CHUẨN KHÔNG CẦN CHỈNH
 
 print("====================================")
 print("   DIGITAL SCADA FOR MEKANISM")
 print("   Initializing... Please stand by")
 print("====================================")
 
--- HÀM TẢI CONFIG DÙNG WGET TRỰC TIẾP
-local function downloadConfig()
-    print("📥 Downloading CONFIG...")
+-- CHỈ TẢI NHỮNG FILE CÓ THẬT TRÊN GITHUB
+local MODULES = {
+    "scada/config_loader.lua",
+}
+
+-- TẢI VÀ CHẠY TỪNG MODULE
+for i, module in ipairs(MODULES) do
+    print("📥 Downloading " .. module)
     
-    -- DÙNG WGET COMMAND TRỰC TIẾP
-    local success = shell.run("wget", "https://raw.githubusercontent.com/JHoang-minecraft/digital-scada/refs/heads/main/scada/config_loader.lua", "config_temp.lua")
+    -- TẢI FILE TỪ GITHUB
+    local success = shell.run("wget", "https://raw.githubusercontent.com/JHoang-minecraft/digital-scada/refs/heads/main/" .. module, module)
     
     if success then
-        -- CHẠY FILE TẢI VỀ
-        shell.run("config_temp.lua")
-        print("✅ CONFIG loaded successfully!")
-        return true
+        -- CHẠY FILE VỪA TẢI
+        shell.run(module)
+        print("✅ " .. module .. " loaded!")
     else
-        print("❌ Failed to download CONFIG")
-        return false
+        print("❌ Failed to download " .. module)
     end
 end
 
--- MAIN
-print("🎯 Starting SCADA...")
-downloadConfig()
-
 -- KIỂM TRA KẾT QUẢ
 if config then
-    print("⚙️ Config loaded: Max Temp = " .. (config.max_temperature or "N/A") .. "K")
+    print("🎯 CONFIG LOADED SUCCESSFULLY!")
+    print("⚙️ Max Temperature: " .. config.max_temperature .. "K")
+    print("🚨 Emergency Temp: " .. config.emergency_shutdown_temp .. "K") 
 else
-    -- CONFIG MẶC ĐỊNH NẾU TẢI THẤT BẠI
-    print("🔄 Using default config...")
+    print("⚠️  Using default config...")
     config = {
         max_temperature = 1200,
-        emergency_shutdown_temp = 1500,
-        debug = true
+        emergency_shutdown_temp = 1500
     }
 end
 
-print("🎯 SCADA System READY!")
+print("====================================")
+print("   SCADA SYSTEM READY!")
 print("====================================")
