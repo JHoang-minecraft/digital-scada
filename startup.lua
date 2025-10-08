@@ -1,35 +1,23 @@
--- Digital SCADA for Mekanism - Startup File
+-- Digital SCADA for Mekanism - Startup File  
+
 
 print("====================================")
 print("   DIGITAL SCADA FOR MEKANISM")
 print("   Initializing... Please stand by")
 print("====================================")
 
--- URL CONFIG CHÍNH
-local CONFIG_URL = "https://raw.githubusercontent.com/JHoang-minecraft/digital-scada/refs/heads/main/scada/config_loader.lua"
-
--- HÀM TẢI CONFIG SIÊU ĐƠN GIẢN
+-- HÀM TẢI CONFIG DÙNG WGET TRỰC TIẾP
 local function downloadConfig()
     print("📥 Downloading CONFIG...")
     
-    -- DÙNG HTTP REQUEST TRỰC TIẾP
-    local http = require("http")
-    local request = http.get(CONFIG_URL)
+    -- DÙNG WGET COMMAND TRỰC TIẾP
+    local success = shell.run("wget", "https://raw.githubusercontent.com/JHoang-minecraft/digital-scada/refs/heads/main/scada/config_loader.lua", "config_temp.lua")
     
-    if request then
-        local content = request.readAll()
-        request.close()
-        
-        -- CHẠY LUÔN CONTENT, KHÔNG LƯU FILE
-        local configFn, err = load(content, "config_loader", "t", _G)
-        if configFn then
-            configFn()
-            print("✅ CONFIG loaded successfully!")
-            return true
-        else
-            print("❌ ERROR loading config: " .. err)
-            return false
-        end
+    if success then
+        -- CHẠY FILE TẢI VỀ
+        shell.run("config_temp.lua")
+        print("✅ CONFIG loaded successfully!")
+        return true
     else
         print("❌ Failed to download CONFIG")
         return false
@@ -37,19 +25,21 @@ local function downloadConfig()
 end
 
 -- MAIN
-local success, err = pcall(downloadConfig)
-if not success then
-    print("❌ CRITICAL: " .. err)
-    return
-end
+print("🎯 Starting SCADA...")
+downloadConfig()
 
--- NẾU CÓ CONFIG THÌ CHẠY TIẾP
+-- KIỂM TRA KẾT QUẢ
 if config then
-    print("🎯 SCADA System READY!")
-    print("⚙️ Max Temperature: " .. config.max_temperature .. "K")
-    print("🚨 Emergency Temp: " .. config.emergency_shutdown_temp .. "K")
+    print("⚙️ Config loaded: Max Temp = " .. (config.max_temperature or "N/A") .. "K")
 else
-    print("❌ Config not loaded!")
+    -- CONFIG MẶC ĐỊNH NẾU TẢI THẤT BẠI
+    print("🔄 Using default config...")
+    config = {
+        max_temperature = 1200,
+        emergency_shutdown_temp = 1500,
+        debug = true
+    }
 end
 
+print("🎯 SCADA System READY!")
 print("====================================")
