@@ -30,21 +30,18 @@ end
 
 -- HÀM TẢI CONFIG ĐẦU TIÊN - QUAN TRỌNG!
 local function downloadConfigFirst()
-    print("📥 Downloading CONFIG first...")
-    print("From: " .. CONFIG_URL)
+    print("📥 Downloading CONFIG...")
     
-    -- Download config file đầu tiên
-    local success = shell.run("wget", "-T", "10", CONFIG_URL, "scada/config_loader.lua")
-    if not success then
-        error("❌ FAILED to download CONFIG: " .. CONFIG_URL)
+    -- CHỈ ĐƠN GIẢN GỌI WGET
+    local success = shell.run("wget", "https://raw.githubusercontent.com/JHoang-minecraft/digital-scada/refs/heads/main/scada/config_loader.lua", "scada/config_loader.lua")
+    
+    if success then
+        print("✅ WGET command completed!")
+        return true
+    else
+        print("❌ WGET failed!")
+        return false
     end
-    
-    if not fs.exists("scada/config_loader.lua") then
-        error("❌ CONFIG file not found after download!")
-    end
-    
-    print("✅ CONFIG downloaded successfully!")
-    return true
 end
 
 -- Hàm download file từ GitHub
