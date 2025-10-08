@@ -32,14 +32,23 @@ end
 local function downloadConfigFirst()
     print("📥 Downloading CONFIG...")
     
-    -- CHỈ ĐƠN GIẢN GỌI WGET
-    local success = shell.run("wget", "https://raw.githubusercontent.com/JHoang-minecraft/digital-scada/refs/heads/main/scada/config_loader.lua", "scada/config_loader.lua")
+    -- DÙNG HTTP REQUEST TRỰC TIẾP
+    local http = require("http")
+    local request = http.get("https://raw.githubusercontent.com/JHoang-minecraft/digital-scada/refs/heads/main/scada/config_loader.lua")
     
-    if success then
-        print("✅ WGET command completed!")
+    if request then
+        local content = request.readAll()
+        request.close()
+        
+        -- LƯU NỘI DUNG VÀO "FILE" TRONG COMPUTER
+        local file = fs.open("scada/config_loader.lua", "w")
+        file.write(content)
+        file.close()
+        
+        print("✅ CONFIG downloaded successfully!")
         return true
     else
-        print("❌ WGET failed!")
+        print("❌ Failed to download CONFIG")
         return false
     end
 end
