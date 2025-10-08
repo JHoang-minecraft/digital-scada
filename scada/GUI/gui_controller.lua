@@ -290,8 +290,7 @@ function startup()
         print("ERROR: GUI system not loaded!")
     end
 end
-
-print("GUI Controller loaded successfully!")
+commands.exec("alias startup lua gui.startup()")
 print("Type 'startup' to launch the control panel!")
 
 return gui
