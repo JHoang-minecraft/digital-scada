@@ -1,9 +1,9 @@
--- scada/config_loader.lua - PRO VERSION 
-
+-- scada/config_loader.lua - TẢI REACTOR_MONITOR THẬT
+-- "Tập trung vào reactor monitor trước" =))
 
 local config_loader = {}
 
--- MÀU SẮC PRO
+-- MÀU SẮC
 local colors = {
     RED = 1,
     GREEN = 2, 
@@ -11,11 +11,9 @@ local colors = {
     BLUE = 4,
     MAGENTA = 5,
     CYAN = 6,
-    WHITE = 7,
-    GRAY = 8
+    WHITE = 7
 }
 
--- Hàm in chữ có màu
 local function printColor(color, text)
     if term.isColor() then
         term.setTextColor(color)
@@ -26,7 +24,7 @@ local function printColor(color, text)
     end
 end
 
--- CONFIG PRO
+-- CONFIG ĐƠN GIẢN
 local default_config = {
     max_temperature = 1200,
     emergency_shutdown_temp = 1500,
@@ -35,26 +33,24 @@ local default_config = {
     temp_critical = 1000,
     debug = true,
     
-    modules = {
-        "reactor_monitor",
-        "alarm_manager", 
-        "gui_controller",
-        "plc_communicator",
-        "data_logger"
-    }
+    -- CHỈ TẢI REACTOR_MONITOR TRƯỚC
+    reactor_monitor_url = "https://raw.githubusercontent.com/JHoang-minecraft/digital-scada/refs/heads/main/Reactors%20Controller/reactor_monitor.lua"
 }
 
--- Tải module (giả lập nhưng không nói)
-local function loadModule(moduleName)
-    printColor(colors.CYAN, "Loading " .. moduleName .. ".lua")
-    os.sleep(0.3)
+-- HÀM TẢI REACTOR_MONITOR THẬT
+local function loadReactorMonitor()
+    printColor(colors.CYAN, "Loading Reactor Monitor...")
     
-    local success = math.random() > 0.1 -- 90% thành công
+    -- TẢI TỪ URL THẬT
+    local success = shell.run("wget", default_config.reactor_monitor_url, "reactor_monitor.lua")
+    
     if success then
-        printColor(colors.GREEN, moduleName .. " loaded successfully!")
+        -- CHẠY MODULE VỪA TẢI
+        shell.run("reactor_monitor.lua")
+        printColor(colors.GREEN, "Reactor Monitor loaded successfully!")
         return true
     else
-        printColor(colors.RED, "Failed to load " .. moduleName)
+        printColor(colors.RED, "Failed to load Reactor Monitor")
         return false
     end
 end
@@ -62,20 +58,20 @@ end
 function config_loader.load()
     printColor(colors.MAGENTA, "=== SCADA SYSTEM INITIALIZATION ===")
     
-    -- Tải các modules
-    local loadedModules = 0
-    for i, module in ipairs(default_config.modules) do
-        if loadModule(module) then
-            loadedModules = loadedModules + 1
-        end
-    end
+    -- TẢI REACTOR_MONITOR ĐẦU TIÊN
+    local reactorLoaded = loadReactorMonitor()
     
-    -- Hiển thị kết quả
+    -- HIỂN THỊ KẾT QUẢ
     printColor(colors.BLUE, "=== SYSTEM STATUS ===")
-    printColor(colors.GREEN, "Modules loaded: " .. loadedModules .. "/" .. #default_config.modules)
+    printColor(reactorLoaded and colors.GREEN or colors.RED, "Reactor Monitor: " .. (reactorLoaded and "LOADED" or "FAILED"))
     printColor(colors.CYAN, "Max Temperature: " .. default_config.max_temperature .. "K")
     printColor(colors.RED, "Emergency Shutdown: " .. default_config.emergency_shutdown_temp .. "K")
-    printColor(colors.YELLOW, "System: OPERATIONAL")
+    
+    if reactorLoaded then
+        printColor(colors.GREEN, "System: READY for reactor control!")
+    else
+        printColor(colors.YELLOW, "System: LIMITED (reactor control unavailable)")
+    end
     
     return default_config
 end
