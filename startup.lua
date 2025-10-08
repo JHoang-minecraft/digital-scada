@@ -1,5 +1,4 @@
 -- Digital SCADA for Mekanism - Startup File
--- VERSION FINAL - CHUẨN KHÔNG CẦN CHỈNH
 
 print("====================================")
 print("   DIGITAL SCADA FOR MEKANISM")
@@ -13,7 +12,7 @@ local MODULES = {
 
 -- TẢI VÀ CHẠY TỪNG MODULE
 for i, module in ipairs(MODULES) do
-    print("📥 Downloading " .. module)
+    print("Downloading " .. module)
     
     -- TẢI FILE TỪ GITHUB
     local success = shell.run("wget", "https://raw.githubusercontent.com/JHoang-minecraft/digital-scada/refs/heads/main/" .. module, module)
@@ -21,19 +20,19 @@ for i, module in ipairs(MODULES) do
     if success then
         -- CHẠY FILE VỪA TẢI
         shell.run(module)
-        print("✅ " .. module .. " loaded!")
+        print("SUCCESS: " .. module .. " loaded!")
     else
-        print("❌ Failed to download " .. module)
+        print("ERROR: Failed to download " .. module)
     end
 end
 
 -- KIỂM TRA KẾT QUẢ
 if config then
-    print("🎯 CONFIG LOADED SUCCESSFULLY!")
-    print("⚙️ Max Temperature: " .. config.max_temperature .. "K")
-    print("🚨 Emergency Temp: " .. config.emergency_shutdown_temp .. "K") 
+    print("CONFIG LOADED SUCCESSFULLY!")
+    print("Max Temperature: " .. config.max_temperature .. "K")
+    print("Emergency Temp: " .. config.emergency_shutdown_temp .. "K") 
 else
-    print("⚠️  Using default config...")
+    print("Using default config...")
     config = {
         max_temperature = 1200,
         emergency_shutdown_temp = 1500
