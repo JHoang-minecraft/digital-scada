@@ -25,10 +25,10 @@ local default_config = {
 }
 
 function config_loader.load()
-    print("🔧 Loading configuration...")
+    print(" Loading configuration...")
     
     if default_config.debug then
-        print("🐛 DEBUG MODE: Enabled - Expect extra messages! =))")
+        print(" DEBUG MODE: Enabled - Expect extra messages! =))")
     end
     
     return default_config
@@ -40,7 +40,7 @@ end
 
 function config_loader.set(key, value)
     default_config[key] = value
-    print("⚙️ Config updated: " .. key .. " = " .. tostring(value))
+    print(" Config updated: " .. key .. " = " .. tostring(value))
 end
 
 -- Auto-load config when module is required
