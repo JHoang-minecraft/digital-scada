@@ -5,7 +5,7 @@ print("   DIGITAL SCADA FOR MEKANISM")
 print("   Initializing... Please stand by")
 print("====================================")
 
-local GITHUB_BASE = "https://raw.githubusercontent.com/JHoang-minecraft/digital-scada/main/"
+local GITHUB_BASE = "https://raw.githubusercontent.com/JHoang-minecraft/digital-scada/refs/heads/main/scada/config_loader.lua"
 
 local MODULES = {
     "scada/config_loader.lua",
