@@ -74,6 +74,10 @@ function config_loader.load()
     return default_config
 end
 
+shell.setAlias("startup", "lua", "gui.startup()")
+
+print("Type 'startup' to launch the control panel!")
+
 -- KHÔNG TẠO BIẾN TOÀN CỤC config NỮA
 config_loader.load()
 
